@@ -40,12 +40,15 @@ body {
 .logo-icon {
   width: 40px;
   height: 40px;
-  background-color: rgba(34, 197, 94, 0.1);
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #22c55e;
+}
+
+.logo-icon svg {
+  width: 100%;
+  height: 100%;
 }
 
 .logo span {

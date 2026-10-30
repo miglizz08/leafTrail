@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="../static/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="layout">
+    
+    <aside class="sidebar">
+<div class="logo">
+  <!-- Ícone SVG direto no código (Sem precisar de imagem) -->
+  <div class="logo-icon">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <!-- Fundo preto arredondado -->
+      <rect width="100" height="100" rx="24" fill="#000000"/>
+      <!-- Desenho da folha verde -->
+      <path d="M 75 25 C 40 25, 20 50, 25 75 C 50 80, 75 60, 75 25 Z" fill="none" stroke="#22c55e" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- Traço diagonal da folha -->
+      <path d="M 25 75 L 60 40" stroke="#22c55e" stroke-width="7" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div>
+    <strong>Leaf Trail</strong>
+  </div>
+</div>
+      
+      <nav class="menu">
+        <a href="dashboard.html" class="active"><i class="fa-solid fa-chart-simple"></i> Dashboard</a>
+        <a href="novo_gasto.html"><i class="fa-solid fa-plus"></i> Novo Gasto</a>
+      </nav>
+
+      <div class="dica">
+        <small>Dica rápida</small>
+        <p>Mantenha seus gastos atualizados.</p>
+        <span>Leva menos de um minuto para registrar.</span>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      
+      <header class="top-header">
+        <div>
+          <div class="tag"><span></span> Visão Geral</div>
+          <h1>Meus Gastos</h1>
+        </div>
+        <div style="display: flex; gap: 16px; align-items: center;">
+          <div class="data-topo">
+            <i class="fa-regular fa-calendar"></i> Sexta-Feira, 30 De Outubro De 2026
+          </div>
+          <a href="index.html" class="btn btn-save" style="text-decoration: none;">
+            <i class="fa-solid fa-plus"></i> Novo Gasto
+          </a>
+        </div>
+      </header>
+
+      <div class="content-area">
+        
+        <div class="card">
+          
+          <div class="table-wrapper">
+            <table class="tabela-gastos">
+              <thead>
+                <tr>
+                  <th>Descrição</th>
+                  <th>Categoria</th>
+                  <th>Data</th>
+                  <th>Valor</th>
+                  <th style="text-align: right;">Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Mercado Central</td>
+                  <td><span class="badge badge-alimentacao">Alimentação</span></td>
+                  <td>30/10/2026</td>
+                  <td class="valor">R$ 150,00</td>
+                  <td class="acoes">
+                    <button class="action-btn"><i class="fa-solid fa-pen"></i></button>
+                    <button class="action-btn btn-delete"><i class="fa-solid fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Spotify Premium</td>
+                  <td><span class="badge badge-lazer">Lazer</span></td>
+                  <td>28/10/2026</td>
+                  <td class="valor">R$ 21,90</td>
+                  <td class="acoes">
+                    <button class="action-btn"><i class="fa-solid fa-pen"></i></button>
+                    <button class="action-btn btn-delete"><i class="fa-solid fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Uber</td>
+                  <td><span class="badge badge-transporte">Transporte</span></td>
+                  <td>25/10/2026</td>
+                  <td class="valor">R$ 34,50</td>
+                  <td class="acoes">
+                    <button class="action-btn"><i class="fa-solid fa-pen"></i></button>
+                    <button class="action-btn btn-delete"><i class="fa-solid fa-trash"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Almoço no Shopping</td>
+                  <td><span class="badge badge-alimentacao">Alimentação</span></td>
+                  <td>22/10/2026</td>
+                  <td class="valor">R$ 45,00</td>
+                  <td class="acoes">
+                    <button class="action-btn"><i class="fa-solid fa-pen"></i></button>
+                    <button class="action-btn btn-delete"><i class="fa-solid fa-trash"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+</body>
+</html>
