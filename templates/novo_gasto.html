@@ -1,13 +1,122 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/css/style.css">
-    <title>Tabela de Gastos</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Novo Gasto</title>
+  <link rel="stylesheet" href="../static/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+
+  <div class="layout">
     
-    
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-icon"><i class="fa-solid fa-wallet"></i></div>
+        <div>
+          <span>Analisador de</span>
+          <strong>Gastos</strong>
+        </div>
+      </div>
+      
+      <nav class="menu">
+        <a href="#"><i class="fa-solid fa-chart-simple"></i> Dashboard</a>
+        <a href="#" class="active"><i class="fa-solid fa-plus"></i> Novo Gasto</a>
+        <a href="#"><i class="fa-solid fa-gear"></i> Configurações</a>
+      </nav>
+
+      <div class="dica">
+        <small>Dica rápida</small>
+        <p>Mantenha seus gastos atualizados.</p>
+        <span>Leva menos de um minuto para registrar.</span>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      
+      <header class="top-header">
+        <div>
+          <div class="tag"><span></span> Lançamentos</div>
+          <h1>Novo Gasto</h1>
+        </div>
+        <div class="data-topo">
+          <i class="fa-regular fa-calendar"></i> Sexta-Feira, 30 De Outubro De 2026
+        </div>
+      </header>
+
+      <div class="content-area">
+        
+        <div class="card">
+          <form action="#" method="POST">
+            
+            <div class="card-header">
+              <div class="card-icon">
+                <i class="fa-solid fa-plus"></i>
+              </div>
+              <h2>Novo Lançamento</h2>
+              <p>Adicione um novo gasto para atualizar seus dados</p>
+            </div>
+
+            <div class="card-body">
+              
+              <div class="form-group">
+                <label for="descricao">Descrição</label>
+                <div class="input-wrapper">
+                  <input type="text" id="descricao" name="descricao" placeholder="Ex: Mercado Central, Spotify...">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="valor">Valor (R$)</label>
+                <div class="input-wrapper input-currency">
+                  <span class="prefix">R$</span>
+                  <input type="text" id="valor" name="valor" placeholder="0,00">
+                </div>
+              </div>
+
+              <div class="form-row">
+                
+                <div class="form-group">
+                  <label for="categoria">Categoria</label>
+                  <div class="input-wrapper input-icon-right">
+                    <select id="categoria" name="categoria" required>
+                      <option value="" disabled selected hidden>Selecione</option>
+                      <option value="alimentacao">Alimentação</option>
+                      <option value="lazer">Lazer</option>
+                      <option value="transporte">Transporte</option>
+                      <option value="transporte">Contas & Assinaturas</option>
+                      <option value="transporte">Outros</option>
+                    </select>
+                    <i class="fa-solid fa-chevron-down"></i>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label for="data">Data do Gasto</label>
+                  <div class="input-wrapper input-icon-right">
+                    <input type="text" id="data" name="data" value="30/10/2026">
+                    <i class="fa-regular fa-calendar"></i>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="card-footer">
+              <button type="button" class="btn btn-cancel">Cancelar</button>
+              <button type="submit" class="btn btn-save">
+                <i class="fa-solid fa-check"></i> Salvar Gasto
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
 </body>
 </html>
