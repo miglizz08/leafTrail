@@ -20,3 +20,7 @@ def criar_banco():
                 descricao TEXT
             )
         """)
+
+        if __name__=="__main__":
+            criar_banco()
+            print(f"Banco inicializado em: {CAMINHO_BANCO}")
