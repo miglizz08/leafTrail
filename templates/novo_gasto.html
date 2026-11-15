@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Novo Gasto</title>
-  <link rel="stylesheet" href="../static/css/style.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -31,8 +31,8 @@
 </div>
       
       <nav class="menu">
-        <a href="dashboard.html"><i class="fa-solid fa-chart-simple"></i> Dashboard</a>
-        <a href="novo_gasto.html" class="active"><i class="fa-solid fa-plus"></i> Novo Gasto</a>
+        <a href="/"><i class="fa-solid fa-chart-simple"></i> Dashboard</a>
+        <a href="/novo-gasto" class="active"><i class="fa-solid fa-plus"></i> Novo Gasto</a>
       </nav>
 
       <div class="dica">
@@ -47,7 +47,7 @@
       <header class="top-header">
         <div>
           <div class="tag"><span></span> Lançamentos</div>
-          <h1>Novo Gasto</h1>
+          <h1>{{ "Editar Gasto" if is_edit else "Novo Gasto" }}</h1>
         </div>
         <div class="data-topo">
           <i class="fa-regular fa-calendar"></i> Sexta-Feira, 30 De Outubro De 2026
@@ -57,22 +57,28 @@
       <div class="content-area">
         
         <div class="card">
-          <form action="#" method="POST">
+          <form id="form-gasto" action="{{ url_for('editar_gasto', expense_id=expense_id) if is_edit else url_for('novo_gasto') }}" method="POST">
             
             <div class="card-header">
               <div class="card-icon">
                 <i class="fa-solid fa-plus"></i>
               </div>
-              <h2>Novo Lançamento</h2>
-              <p>Adicione um novo gasto para atualizar seus dados</p>
+              <h2>{{ "Editar Lançamento" if is_edit else "Novo Lançamento" }}</h2>
+              <p>{{ "Atualize os dados deste gasto" if is_edit else "Adicione um novo gasto para atualizar seus dados" }}</p>
             </div>
+
+            {% if error %}
+              <p class="form-message form-message-error" role="alert">{{ error }}</p>
+            {% elif success %}
+              <p class="form-message form-message-success" role="status">Gasto salvo com sucesso.</p>
+            {% endif %}
 
             <div class="card-body">
               
               <div class="form-group">
                 <label for="descricao">Descrição</label>
                 <div class="input-wrapper">
-                  <input type="text" id="descricao" name="descricao" placeholder="Ex: Mercado Central, Spotify...">
+                  <input type="text" id="descricao" name="descricao" maxlength="255" placeholder="Ex: Mercado Central, Spotify..." value="{{ form_data.get('descricao', '') if form_data else '' }}">
                 </div>
               </div>
 
@@ -80,7 +86,7 @@
                 <label for="valor">Valor (R$)</label>
                 <div class="input-wrapper input-currency">
                   <span class="prefix">R$</span>
-                  <input type="text" id="valor" name="valor" placeholder="0,00">
+                  <input type="text" id="valor" name="valor" inputmode="decimal" placeholder="0,00" required value="{{ form_data.get('valor', '') if form_data else '' }}">
                 </div>
               </div>
 
@@ -90,12 +96,12 @@
                   <label for="categoria">Categoria</label>
                   <div class="input-wrapper input-icon-right">
                     <select id="categoria" name="categoria" required>
-                      <option value="" disabled selected hidden>Selecione</option>
-                      <option value="alimentacao">Alimentação</option>
-                      <option value="lazer">Lazer</option>
-                      <option value="transporte">Transporte</option>
-                      <option value="transporte">Contas & Assinaturas</option>
-                      <option value="transporte">Outros</option>
+                      <option value="" disabled {% if not form_data or not form_data.get('categoria') %}selected{% endif %} hidden>Selecione</option>
+                      <option value="alimentacao" {% if form_data and form_data.get('categoria') == 'alimentacao' %}selected{% endif %}>Alimentação</option>
+                      <option value="transporte" {% if form_data and form_data.get('categoria') == 'transporte' %}selected{% endif %}>Transporte</option>
+                      <option value="lazer" {% if form_data and form_data.get('categoria') == 'lazer' %}selected{% endif %}>Lazer</option>
+                      <option value="contas_assinaturas" {% if form_data and form_data.get('categoria') == 'contas_assinaturas' %}selected{% endif %}>Contas & Assinaturas</option>
+                      <option value="outros" {% if form_data and form_data.get('categoria') == 'outros' %}selected{% endif %}>Outros</option>
                     </select>
                     <i class="fa-solid fa-chevron-down"></i>
                   </div>
@@ -104,7 +110,7 @@
                 <div class="form-group">
                   <label for="data">Data do Gasto</label>
                   <div class="input-wrapper input-icon-right">
-                    <input type="text" id="data" name="data" value="30/10/2026">
+                    <input type="date" id="data" name="data" required value="{{ form_data.get('data', today) if form_data else today }}">
                     <i class="fa-regular fa-calendar"></i>
                   </div>
                 </div>
@@ -113,9 +119,9 @@
             </div>
 
             <div class="card-footer">
-              <button type="button" class="btn btn-cancel">Cancelar</button>
+              <a href="/" class="btn btn-cancel">Cancelar</a>
               <button type="submit" class="btn btn-save">
-                <i class="fa-solid fa-check"></i> Salvar Gasto
+                <i class="fa-solid fa-check"></i> {{ "Atualizar Gasto" if is_edit else "Salvar Gasto" }}
               </button>
             </div>
 
