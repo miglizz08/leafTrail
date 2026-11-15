@@ -405,6 +405,7 @@ select option {
   background-color: transparent;
   border: none;
   color: #ef4444;
+  text-decoration: none;
   width: 32px;
   height: 32px;
   cursor: pointer;

@@ -3,7 +3,7 @@ from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
 
 import mysql.connector
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, abort, redirect, render_template, request, url_for
 
 from database.connection import get_connection
 
@@ -74,13 +74,15 @@ def validate_expense(form):
     return expense_date, amount, category, description or None
 
 
-def render_expense_form(error=None, status=200):
+def render_expense_form(error=None, status=200, *, is_edit=False, expense_id=None):
     return (
         render_template(
             "novo_gasto.html",
             today=date.today().isoformat(),
             form_data=request.form,
             error=error,
+            is_edit=is_edit,
+            expense_id=expense_id,
         ),
         status,
     )
@@ -166,6 +168,89 @@ def novo_gasto():
             connection.close()
 
     return redirect(url_for("novo_gasto", salvo=1))
+
+
+@app.route("/gastos/<int:expense_id>/editar", methods=["GET", "POST"])
+def editar_gasto(expense_id):
+    connection = None
+    cursor = None
+
+    if request.method == "GET":
+        try:
+            connection = get_connection()
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute(
+                "SELECT id, descricao, categoria, data, valor FROM gastos WHERE id = %s",
+                (expense_id,),
+            )
+            expense = cursor.fetchone()
+        except mysql.connector.Error:
+            app.logger.exception("Não foi possível carregar o gasto para edição.")
+            return "Não foi possível carregar o gasto.", 503
+        finally:
+            if cursor is not None:
+                cursor.close()
+            if connection is not None and connection.is_connected():
+                connection.close()
+
+        if expense is None:
+            abort(404)
+
+        expense["data"] = expense["data"].isoformat()
+        return render_template(
+            "novo_gasto.html",
+            today=date.today().isoformat(),
+            form_data=expense,
+            is_edit=True,
+            expense_id=expense_id,
+        )
+
+    try:
+        expense_date, amount, category, description = validate_expense(request.form)
+    except ValueError as error:
+        return render_expense_form(
+            str(error),
+            status=400,
+            is_edit=True,
+            expense_id=expense_id,
+        )
+
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        cursor.execute(
+            "SELECT id FROM gastos WHERE id = %s",
+            (expense_id,),
+        )
+        if cursor.fetchone() is None:
+            abort(404)
+
+        cursor.execute(
+            """
+            UPDATE gastos
+            SET data = %s, valor = %s, categoria = %s, descricao = %s
+            WHERE id = %s
+            """,
+            (expense_date, amount, category, description, expense_id),
+        )
+        connection.commit()
+    except mysql.connector.Error:
+        if connection is not None:
+            connection.rollback()
+        app.logger.exception("Não foi possível atualizar o gasto no banco de dados.")
+        return render_expense_form(
+            "Não foi possível atualizar o gasto. Confira se o MySQL está ligado e tente novamente.",
+            status=503,
+            is_edit=True,
+            expense_id=expense_id,
+        )
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if connection is not None and connection.is_connected():
+            connection.close()
+
+    return redirect(url_for("dashboard"))
 
 
 if __name__ == "__main__":

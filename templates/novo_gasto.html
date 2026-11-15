@@ -47,7 +47,7 @@
       <header class="top-header">
         <div>
           <div class="tag"><span></span> Lançamentos</div>
-          <h1>Novo Gasto</h1>
+          <h1>{{ "Editar Gasto" if is_edit else "Novo Gasto" }}</h1>
         </div>
         <div class="data-topo">
           <i class="fa-regular fa-calendar"></i> Sexta-Feira, 30 De Outubro De 2026
@@ -57,14 +57,14 @@
       <div class="content-area">
         
         <div class="card">
-          <form id="form-gasto" action="/novo-gasto" method="POST">
+          <form id="form-gasto" action="{{ url_for('editar_gasto', expense_id=expense_id) if is_edit else url_for('novo_gasto') }}" method="POST">
             
             <div class="card-header">
               <div class="card-icon">
                 <i class="fa-solid fa-plus"></i>
               </div>
-              <h2>Novo Lançamento</h2>
-              <p>Adicione um novo gasto para atualizar seus dados</p>
+              <h2>{{ "Editar Lançamento" if is_edit else "Novo Lançamento" }}</h2>
+              <p>{{ "Atualize os dados deste gasto" if is_edit else "Adicione um novo gasto para atualizar seus dados" }}</p>
             </div>
 
             {% if error %}
@@ -119,9 +119,9 @@
             </div>
 
             <div class="card-footer">
-              <button type="button" class="btn btn-cancel">Cancelar</button>
+              <a href="/" class="btn btn-cancel">Cancelar</a>
               <button type="submit" class="btn btn-save">
-                <i class="fa-solid fa-check"></i> Salvar Gasto
+                <i class="fa-solid fa-check"></i> {{ "Atualizar Gasto" if is_edit else "Salvar Gasto" }}
               </button>
             </div>
 
