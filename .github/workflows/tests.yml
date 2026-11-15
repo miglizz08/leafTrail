@@ -5,9 +5,12 @@ on:
     branches:
       - backend-flask
       - master
+      - layout-novo-gasto
   pull_request:
     branches:
+      - backend-flask
       - master
+      - layout-novo-gasto
 
 permissions:
   contents: read
