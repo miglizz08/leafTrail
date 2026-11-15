@@ -22,4 +22,5 @@ def get_connection():
         database=os.environ["DB_NAME"],
         user=os.environ["DB_USER"],
         password=os.environ["DB_PASSWORD"],
+        use_pure=True,
     )
