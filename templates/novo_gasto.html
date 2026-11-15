@@ -67,12 +67,18 @@
               <p>Adicione um novo gasto para atualizar seus dados</p>
             </div>
 
+            {% if error %}
+              <p class="form-message form-message-error" role="alert">{{ error }}</p>
+            {% elif success %}
+              <p class="form-message form-message-success" role="status">Gasto salvo com sucesso.</p>
+            {% endif %}
+
             <div class="card-body">
               
               <div class="form-group">
                 <label for="descricao">Descrição</label>
                 <div class="input-wrapper">
-                  <input type="text" id="descricao" name="descricao" placeholder="Ex: Mercado Central, Spotify...">
+                  <input type="text" id="descricao" name="descricao" maxlength="255" placeholder="Ex: Mercado Central, Spotify..." value="{{ form_data.get('descricao', '') if form_data else '' }}">
                 </div>
               </div>
 
@@ -80,7 +86,7 @@
                 <label for="valor">Valor (R$)</label>
                 <div class="input-wrapper input-currency">
                   <span class="prefix">R$</span>
-                  <input type="text" id="valor" name="valor" placeholder="0,00">
+                  <input type="text" id="valor" name="valor" inputmode="decimal" placeholder="0,00" required value="{{ form_data.get('valor', '') if form_data else '' }}">
                 </div>
               </div>
 
@@ -90,12 +96,12 @@
                   <label for="categoria">Categoria</label>
                   <div class="input-wrapper input-icon-right">
                     <select id="categoria" name="categoria" required>
-                      <option value="" disabled selected hidden>Selecione</option>
-                      <option value="alimentacao">Alimentação</option>
-                      <option value="lazer">Lazer</option>
-                      <option value="transporte">Transporte</option>
-                      <option value="Contas & Assinaturas">Contas & Assinaturas</option>
-                      <option value="Outros">Outros</option>
+                      <option value="" disabled {% if not form_data or not form_data.get('categoria') %}selected{% endif %} hidden>Selecione</option>
+                      <option value="alimentacao" {% if form_data and form_data.get('categoria') == 'alimentacao' %}selected{% endif %}>Alimentação</option>
+                      <option value="transporte" {% if form_data and form_data.get('categoria') == 'transporte' %}selected{% endif %}>Transporte</option>
+                      <option value="lazer" {% if form_data and form_data.get('categoria') == 'lazer' %}selected{% endif %}>Lazer</option>
+                      <option value="contas_assinaturas" {% if form_data and form_data.get('categoria') == 'contas_assinaturas' %}selected{% endif %}>Contas & Assinaturas</option>
+                      <option value="outros" {% if form_data and form_data.get('categoria') == 'outros' %}selected{% endif %}>Outros</option>
                     </select>
                     <i class="fa-solid fa-chevron-down"></i>
                   </div>
@@ -104,7 +110,7 @@
                 <div class="form-group">
                   <label for="data">Data do Gasto</label>
                   <div class="input-wrapper input-icon-right">
-                    <input type="text" id="data" name="data" value="30/10/2026">
+                    <input type="date" id="data" name="data" required value="{{ form_data.get('data', today) if form_data else today }}">
                     <i class="fa-regular fa-calendar"></i>
                   </div>
                 </div>

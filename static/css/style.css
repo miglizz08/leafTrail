@@ -186,6 +186,25 @@ body {
   gap: 24px;
 }
 
+.form-message {
+  margin: 20px 32px 0;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.form-message-error {
+  color: #fecaca;
+  background-color: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.form-message-success {
+  color: #bbf7d0;
+  background-color: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+}
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -468,6 +487,10 @@ select option {
   .card-header,
   .card-body {
     padding: 24px 20px;
+  }
+
+  .form-message {
+    margin: 16px 20px 0;
   }
 
   .form-row {
