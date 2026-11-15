@@ -17,6 +17,20 @@ CATEGORIES = {
     "contas_assinaturas",
     "outros",
 }
+CATEGORY_LABELS = {
+    "alimentacao": "Alimentação",
+    "transporte": "Transporte",
+    "lazer": "Lazer",
+    "contas_assinaturas": "Contas & Assinaturas",
+    "outros": "Outros",
+}
+
+
+@app.template_filter("brl")
+def format_brl(value):
+    whole, cents = f"{value:.2f}".split(".")
+    whole_with_separators = f"{int(whole):,}".replace(",", ".")
+    return f"R$ {whole_with_separators},{cents}"
 
 
 def validate_expense(form):
@@ -74,7 +88,34 @@ def render_expense_form(error=None, status=200):
 
 @app.route("/")
 def dashboard():
-    return render_template("dashboard.html")
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_connection()
+        cursor = connection.cursor(dictionary=True)
+        cursor.execute(
+            """
+            SELECT id, descricao, categoria, data, valor
+            FROM gastos
+            ORDER BY data DESC, id DESC
+            """
+        )
+        expenses = cursor.fetchall()
+    except mysql.connector.Error:
+        app.logger.exception("Não foi possível carregar os gastos do banco de dados.")
+        return render_template("dashboard.html", db_error=True), 503
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if connection is not None and connection.is_connected():
+            connection.close()
+
+    return render_template(
+        "dashboard.html",
+        expenses=expenses,
+        category_labels=CATEGORY_LABELS,
+    )
 
 
 @app.route("/novo-gasto", methods=["GET", "POST"])

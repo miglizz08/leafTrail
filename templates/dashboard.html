@@ -75,46 +75,24 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Mercado Central</td>
-                  <td><span class="badge badge-alimentacao">Alimentação</span></td>
-                  <td>30/10/2026</td>
-                  <td class="valor">R$ 150,00</td>
-                  <td class="acoes">
-                    <button class="action-btn"><i class="fa-solid fa-pen"></i></button>
-                    <button class="action-btn btn-delete"><i class="fa-solid fa-trash"></i></button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Spotify Premium</td>
-                  <td><span class="badge badge-lazer">Lazer</span></td>
-                  <td>28/10/2026</td>
-                  <td class="valor">R$ 21,90</td>
-                  <td class="acoes">
-                    <button class="action-btn"><i class="fa-solid fa-pen"></i></button>
-                    <button class="action-btn btn-delete"><i class="fa-solid fa-trash"></i></button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Uber</td>
-                  <td><span class="badge badge-transporte">Transporte</span></td>
-                  <td>25/10/2026</td>
-                  <td class="valor">R$ 34,50</td>
-                  <td class="acoes">
-                    <button class="action-btn"><i class="fa-solid fa-pen"></i></button>
-                    <button class="action-btn btn-delete"><i class="fa-solid fa-trash"></i></button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Almoço no Shopping</td>
-                  <td><span class="badge badge-alimentacao">Alimentação</span></td>
-                  <td>22/10/2026</td>
-                  <td class="valor">R$ 45,00</td>
-                  <td class="acoes">
-                    <button class="action-btn"><i class="fa-solid fa-pen"></i></button>
-                    <button class="action-btn btn-delete"><i class="fa-solid fa-trash"></i></button>
-                  </td>
-                </tr>
+                {% if db_error %}
+                  <tr><td colspan="5">Não foi possível carregar os gastos. Confira a conexão com o MySQL.</td></tr>
+                {% elif expenses %}
+                  {% for expense in expenses %}
+                    <tr>
+                      <td>{{ expense.descricao or "—" }}</td>
+                      <td><span class="badge-simples">{{ category_labels.get(expense.categoria, expense.categoria) }}</span></td>
+                      <td>{{ expense.data.strftime("%d/%m/%Y") }}</td>
+                      <td class="valor">{{ expense.valor | brl }}</td>
+                      <td class="acoes">
+                        <button class="action-btn" type="button" aria-label="Editar gasto"><i class="fa-solid fa-pen"></i></button>
+                        <button class="action-btn btn-delete" type="button" aria-label="Excluir gasto"><i class="fa-solid fa-trash"></i></button>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr><td colspan="5">Nenhum gasto cadastrado ainda.</td></tr>
+                {% endif %}
               </tbody>
             </table>
           </div>
