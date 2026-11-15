@@ -91,7 +91,7 @@
               <tbody>
                 {% if db_error %}
                 <tr>
-                  <td colspan="5">Não foi possível carregar os gastos. Confira a conexão com o MySQL.</td>
+                  <td colspan="5">Não foi possível acessar o banco de dados configurado neste ambiente.</td>
                 </tr>
                 {% elif expenses %}
                 {% for expense in expenses %}

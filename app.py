@@ -5,7 +5,7 @@ from decimal import Decimal, InvalidOperation
 import mysql.connector
 from flask import Flask, abort, redirect, render_template, request, url_for
 
-from database.connection import get_connection
+from database.connection import DatabaseConfigurationError, get_connection
 
 
 app = Flask(__name__)
@@ -108,7 +108,7 @@ def dashboard():
         cursor.execute("SELECT COALESCE(SUM(valor), 0) AS total FROM gastos")
         total = cursor.fetchone()["total"]
 
-    except mysql.connector.Error:
+    except (mysql.connector.Error, DatabaseConfigurationError):
         app.logger.exception("Não foi possível carregar os gastos do banco de dados.")
         return render_template("dashboard.html", db_error=True), 503
     finally:
@@ -153,12 +153,12 @@ def novo_gasto():
             (expense_date, amount, category, description),
         )
         connection.commit()
-    except mysql.connector.Error:
+    except (mysql.connector.Error, DatabaseConfigurationError):
         if connection is not None:
             connection.rollback()
         app.logger.exception("Não foi possível salvar o gasto no banco de dados.")
         return render_expense_form(
-            "Não foi possível salvar o gasto. Confira se o MySQL está ligado e tente novamente.",
+            "Banco de dados indisponível neste ambiente. Confira a configuração e tente novamente.",
             status=503,
         )
     finally:
@@ -184,7 +184,7 @@ def editar_gasto(expense_id):
                 (expense_id,),
             )
             expense = cursor.fetchone()
-        except mysql.connector.Error:
+        except (mysql.connector.Error, DatabaseConfigurationError):
             app.logger.exception("Não foi possível carregar o gasto para edição.")
             return "Não foi possível carregar o gasto.", 503
         finally:
@@ -234,12 +234,12 @@ def editar_gasto(expense_id):
             (expense_date, amount, category, description, expense_id),
         )
         connection.commit()
-    except mysql.connector.Error:
+    except (mysql.connector.Error, DatabaseConfigurationError):
         if connection is not None:
             connection.rollback()
         app.logger.exception("Não foi possível atualizar o gasto no banco de dados.")
         return render_expense_form(
-            "Não foi possível atualizar o gasto. Confira se o MySQL está ligado e tente novamente.",
+            "Banco de dados indisponível neste ambiente. Confira a configuração e tente novamente.",
             status=503,
             is_edit=True,
             expense_id=expense_id,
@@ -267,7 +267,7 @@ def excluir_gasto(expense_id):
             abort(404)
 
         connection.commit()
-    except mysql.connector.Error:
+    except (mysql.connector.Error, DatabaseConfigurationError):
         if connection is not None:
             connection.rollback()
         app.logger.exception("Não foi possível excluir o gasto do banco de dados.")
