@@ -104,8 +104,10 @@
                   <td class="acoes">
                     <a class="action-btn" href="{{ url_for('editar_gasto', expense_id=expense.id) }}" aria-label="Editar gasto"><i
                         class="fa-solid fa-pen"></i></a>
-                    <button class="action-btn btn-delete" type="button" aria-label="Excluir gasto"><i
-                        class="fa-solid fa-trash"></i></button>
+                    <form class="inline-action-form" action="{{ url_for('excluir_gasto', expense_id=expense.id) }}" method="post" onsubmit="return confirm('Deseja realmente excluir este gasto?')">
+                      <button class="action-btn btn-delete" type="submit" aria-label="Excluir gasto"><i
+                          class="fa-solid fa-trash"></i></button>
+                    </form>
                   </td>
                 </tr>
                 {% endfor %}

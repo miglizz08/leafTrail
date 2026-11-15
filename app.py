@@ -253,5 +253,33 @@ def editar_gasto(expense_id):
     return redirect(url_for("dashboard"))
 
 
+@app.route("/gastos/<int:expense_id>/excluir", methods=["POST"])
+def excluir_gasto(expense_id):
+    connection = None
+    cursor = None
+
+    try:
+        connection = get_connection()
+        cursor = connection.cursor()
+        cursor.execute("DELETE FROM gastos WHERE id = %s", (expense_id,))
+
+        if cursor.rowcount == 0:
+            abort(404)
+
+        connection.commit()
+    except mysql.connector.Error:
+        if connection is not None:
+            connection.rollback()
+        app.logger.exception("Não foi possível excluir o gasto do banco de dados.")
+        return "Não foi possível excluir o gasto. Tente novamente.", 503
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if connection is not None and connection.is_connected():
+            connection.close()
+
+    return redirect(url_for("dashboard"))
+
+
 if __name__ == "__main__":
     app.run(debug=True)

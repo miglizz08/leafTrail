@@ -401,6 +401,10 @@ select option {
   text-align: right;
 }
 
+.inline-action-form {
+  display: inline;
+}
+
 .action-btn {
   background-color: transparent;
   border: none;
