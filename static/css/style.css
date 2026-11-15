@@ -396,3 +396,116 @@ select option {
   color: #dc2626;
   transform: scale(1.1);
 }
+
+/* ================= LAYOUT RESPONSIVO ================= */
+@media (max-width: 760px) {
+  body {
+    min-height: 100vh;
+    height: auto;
+    overflow: auto;
+  }
+
+  .layout {
+    min-height: 100vh;
+    height: auto;
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    padding: 14px 16px;
+    border-right: 0;
+    border-bottom: 1px solid #222;
+  }
+
+  .logo {
+    padding-bottom: 12px;
+    margin-bottom: 10px;
+  }
+
+  .menu {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .menu a {
+    flex: 1;
+    justify-content: center;
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+
+  .dica {
+    display: none;
+  }
+
+  .main-content {
+    width: 100%;
+    overflow: visible;
+  }
+
+  .top-header {
+    padding: 24px 20px;
+  }
+
+  .top-header > div:last-child {
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+
+  .top-header h1 {
+    font-size: 24px;
+  }
+
+  .data-topo {
+    font-size: 12px;
+  }
+
+  .content-area {
+    padding: 0 16px 24px;
+  }
+
+  .card-header,
+  .card-body {
+    padding: 24px 20px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .card-footer {
+    padding: 16px 20px;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tabela-gastos {
+    min-width: 680px;
+  }
+
+  .tabela-gastos th,
+  .tabela-gastos td {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+@media (max-width: 380px) {
+  .menu a {
+    gap: 6px;
+    font-size: 12px;
+  }
+
+  .card-footer {
+    flex-direction: column-reverse;
+  }
+
+  .card-footer .btn {
+    width: 100%;
+  }
+}
