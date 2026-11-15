@@ -102,6 +102,10 @@ def dashboard():
             """
         )
         expenses = cursor.fetchall()
+
+        cursor.execute("SELECT COALESCE(SUM(valor), 0) AS total FROM gastos")
+        total = cursor.fetchone()["total"]
+
     except mysql.connector.Error:
         app.logger.exception("Não foi possível carregar os gastos do banco de dados.")
         return render_template("dashboard.html", db_error=True), 503
@@ -115,6 +119,7 @@ def dashboard():
         "dashboard.html",
         expenses=expenses,
         category_labels=CATEGORY_LABELS,
+        total=total,
     )
 
 
