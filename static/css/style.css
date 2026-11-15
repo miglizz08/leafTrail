@@ -186,6 +186,25 @@ body {
   gap: 24px;
 }
 
+.form-message {
+  margin: 20px 32px 0;
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.form-message-error {
+  color: #fecaca;
+  background-color: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+}
+
+.form-message-success {
+  color: #bbf7d0;
+  background-color: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+}
+
 .form-group {
   display: flex;
   flex-direction: column;
@@ -198,7 +217,7 @@ body {
   font-weight: 500;
 }
 
-input[type="text"], select {
+input[type="text"], input[type="date"], select {
   width: 100%;
   background-color: #090909;
   border: 1px solid #2a2a2a;
@@ -210,8 +229,12 @@ input[type="text"], select {
   transition: border 0.2s;
 }
 
-input[type="text"]:focus, select:focus { 
+input[type="text"]:focus, input[type="date"]:focus, select:focus {
   border-color: #22c55e; 
+}
+
+input[type="date"] {
+  color-scheme: dark;
 }
 
 input::placeholder { 
@@ -378,10 +401,15 @@ select option {
   text-align: right;
 }
 
+.inline-action-form {
+  display: inline;
+}
+
 .action-btn {
   background-color: transparent;
   border: none;
   color: #ef4444;
+  text-decoration: none;
   width: 32px;
   height: 32px;
   cursor: pointer;
@@ -395,4 +423,121 @@ select option {
 .action-btn:hover {
   color: #dc2626;
   transform: scale(1.1);
+}
+
+/* ================= LAYOUT RESPONSIVO ================= */
+@media (max-width: 760px) {
+  body {
+    min-height: 100vh;
+    height: auto;
+    overflow: auto;
+  }
+
+  .layout {
+    min-height: 100vh;
+    height: auto;
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    padding: 14px 16px;
+    border-right: 0;
+    border-bottom: 1px solid #222;
+  }
+
+  .logo {
+    padding-bottom: 12px;
+    margin-bottom: 10px;
+  }
+
+  .menu {
+    flex-direction: row;
+    gap: 8px;
+  }
+
+  .menu a {
+    flex: 1;
+    justify-content: center;
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+
+  .dica {
+    display: none;
+  }
+
+  .main-content {
+    width: 100%;
+    overflow: visible;
+  }
+
+  .top-header {
+    padding: 24px 20px;
+  }
+
+  .top-header > div:last-child {
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+
+  .top-header h1 {
+    font-size: 24px;
+  }
+
+  .data-topo {
+    font-size: 12px;
+  }
+
+  .content-area {
+    padding: 0 16px 24px;
+  }
+
+  .card-header,
+  .card-body {
+    padding: 24px 20px;
+  }
+
+  .form-message {
+    margin: 16px 20px 0;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .card-footer {
+    padding: 16px 20px;
+  }
+
+  .table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tabela-gastos {
+    min-width: 680px;
+  }
+
+  .tabela-gastos th,
+  .tabela-gastos td {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+@media (max-width: 380px) {
+  .menu a {
+    gap: 6px;
+    font-size: 12px;
+  }
+
+  .card-footer {
+    flex-direction: column-reverse;
+  }
+
+  .card-footer .btn {
+    width: 100%;
+  }
 }
