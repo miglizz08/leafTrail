@@ -30,5 +30,8 @@ jobs:
       - name: Instalar dependências
         run: python -m pip install -r requirements.txt
 
+      - name: Instalar Chromium para testes E2E
+        run: python -m playwright install --with-deps chromium
+
       - name: Executar testes
         run: python -m pytest
