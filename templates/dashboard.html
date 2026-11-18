@@ -54,7 +54,7 @@
         </div>
         <div style="display: flex; gap: 16px; align-items: center;">
           <div class="data-topo">
-            <i class="fa-regular fa-calendar"></i> Sexta-Feira, 30 De Outubro De 2026
+            <i class="fa-regular fa-calendar"></i> <time data-current-date></time>
           </div>
           <a href="/novo-gasto" class="btn btn-save" style="text-decoration: none;">
             <i class="fa-solid fa-plus"></i> Novo Gasto
@@ -126,6 +126,7 @@
     </main>
   </div>
 
+  <script src="{{ url_for('static', filename='js/current_date.js') }}" defer></script>
 </body>
 
 </html>
