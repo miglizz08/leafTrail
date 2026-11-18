@@ -25,11 +25,21 @@ def get_connection():
     except ValueError as error:
         raise DatabaseConfigurationError("DB_PORT deve ser um número inteiro.") from error
 
-    return mysql.connector.connect(
-        host=os.environ["DB_HOST"],
-        port=port,
-        database=os.environ["DB_NAME"],
-        user=os.environ["DB_USER"],
-        password=os.environ["DB_PASSWORD"],
-        use_pure=True,
-    )
+    connection_settings = {
+        "host": os.environ["DB_HOST"],
+        "port": port,
+        "database": os.environ["DB_NAME"],
+        "user": os.environ["DB_USER"],
+        "password": os.environ["DB_PASSWORD"],
+        "use_pure": True,
+    }
+
+    ssl_ca = os.getenv("DB_SSL_CA")
+    if ssl_ca:
+        connection_settings.update(
+            ssl_ca=ssl_ca,
+            ssl_verify_cert=True,
+            ssl_verify_identity=True,
+        )
+
+    return mysql.connector.connect(**connection_settings)
