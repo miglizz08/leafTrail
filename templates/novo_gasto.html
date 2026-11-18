@@ -50,7 +50,7 @@
           <h1>{{ "Editar Gasto" if is_edit else "Novo Gasto" }}</h1>
         </div>
         <div class="data-topo">
-          <i class="fa-regular fa-calendar"></i> Sexta-Feira, 30 De Outubro De 2026
+          <i class="fa-regular fa-calendar"></i> <time data-current-date></time>
         </div>
       </header>
 
@@ -131,5 +131,6 @@
     </main>
   </div>
 
+  <script src="{{ url_for('static', filename='js/current_date.js') }}" defer></script>
 </body>
 </html>
