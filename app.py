@@ -135,6 +135,14 @@ def dashboard():
         expenses=expenses,
         category_labels=CATEGORY_LABELS,
         total=total,
+        expense_count=expense_count,
+        success_message=(
+            "Gasto atualizado com sucesso!"
+            if request.args.get("atualizado") == "1"
+            else "Gasto registrado com sucesso!"
+            if request.args.get("salvo") == "1"
+            else None
+        ),
     )
 
 
@@ -180,7 +188,7 @@ def novo_gasto():
         if connection is not None and connection.is_connected():
             connection.close()
 
-    return redirect(url_for("novo_gasto", salvo=1))
+    return redirect(url_for("dashboard", salvo=1))
 
 
 @app.route("/gastos/<int:expense_id>/editar", methods=["GET", "POST"])
@@ -263,7 +271,7 @@ def editar_gasto(expense_id):
         if connection is not None and connection.is_connected():
             connection.close()
 
-    return redirect(url_for("dashboard"))
+    return redirect(url_for("dashboard", atualizado=1))
 
 
 @app.route("/gastos/<int:expense_id>/excluir", methods=["POST"])
