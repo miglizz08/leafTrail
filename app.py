@@ -45,6 +45,9 @@ def validate_expense(form):
     category = form.get("categoria", "")
     raw_date = form.get("data", "")
 
+    if not description:
+        raise ValueError("Informe uma descrição para o gasto.")
+
     if len(description) > 255:
         raise ValueError("A descrição deve ter no máximo 255 caracteres.")
 
