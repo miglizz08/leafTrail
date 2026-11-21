@@ -29,10 +29,9 @@ def test_validate_expense_parses_brazilian_currency():
     )
 
 
-def test_validate_expense_accepts_optional_description():
-    parsed = validate_expense(expense_form(descricao="   "))
-
-    assert parsed[3] is None
+def test_validate_expense_rejects_empty_description():
+    with pytest.raises(ValueError, match="descrição"):
+        validate_expense(expense_form(descricao="   "))
 
 
 @pytest.mark.parametrize("value", ["0", "-10,00", "abc", "10,999"])
@@ -69,7 +68,7 @@ class FakeCursor:
         return self.expenses
 
     def fetchone(self):
-        return {"total": self.total}
+        return {"total": self.total, "expense_count": len(self.expenses)}
 
     def close(self):
         pass
@@ -108,3 +107,6 @@ def test_dashboard_displays_database_total(monkeypatch, expenses, total, expecte
 
     assert response.status_code == 200
     assert expected_total.encode() in response.data
+    expected_count = len(expenses)
+    expected_label = "lançamento" if expected_count == 1 else "lançamentos"
+    assert f"{expected_count} {expected_label}".encode() in response.data

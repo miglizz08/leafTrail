@@ -63,7 +63,7 @@ class MemoryCursor:
             self.rows = [{"total": sum(
                 (expense["valor"] for expense in self.store.expenses),
                 Decimal("0.00"),
-            )}]
+            ), "expense_count": len(self.store.expenses)}]
         elif query.startswith("SELECT") and "FROM GASTOS WHERE ID = %S" in query:
             expense = next(
                 (item for item in self.store.expenses if item["id"] == params[0]),
@@ -138,10 +138,10 @@ def test_user_can_create_edit_and_delete_expense(live_app):
             page.locator("#categoria").select_option("alimentacao")
             page.locator("#data").fill(date.today().isoformat())
             page.get_by_role("button", name="Salvar Gasto").click()
-            expect(page.get_by_role("status")).to_have_text("Gasto salvo com sucesso.")
+            expect(page.get_by_role("status")).to_have_text("Gasto registrado com sucesso!")
 
             page.goto(live_app)
-            expect(page.get_by_role("heading", name="Meus Gastos")).to_be_visible()
+            expect(page.get_by_role("heading", name="Dashboard")).to_be_visible()
             expect(page.get_by_text("Almoço de teste")).to_be_visible()
             expect(page.get_by_text("R$ 35,50").first).to_be_visible()
 
@@ -153,9 +153,11 @@ def test_user_can_create_edit_and_delete_expense(live_app):
             expect(page.get_by_text("Almoço atualizado")).to_be_visible()
             expect(page.get_by_role("cell", name="R$ 42,00")).to_be_visible()
 
-            page.on("dialog", lambda dialog: dialog.accept())
             page.get_by_role("button", name="Excluir gasto").click()
-            expect(page.get_by_text("Nenhum gasto cadastrado ainda.")).to_be_visible()
+            delete_dialog = page.get_by_role("dialog", name="Excluir gasto?")
+            expect(delete_dialog).to_be_visible()
+            delete_dialog.get_by_role("button", name="Excluir").click()
+            expect(page.get_by_role("heading", name="Nenhum gasto registrado ainda")).to_be_visible()
             expect(page.get_by_text("R$ 0,00")).to_be_visible()
         finally:
             browser.close()

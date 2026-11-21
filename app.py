@@ -33,11 +33,20 @@ def format_brl(value):
     return f"R$ {whole_with_separators},{cents}"
 
 
+@app.template_filter("expense_date")
+def format_expense_date(value):
+    month_names = ("Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez")
+    return f"{value.day:02d} {month_names[value.month - 1]} {value.year}"
+
+
 def validate_expense(form):
     description = form.get("descricao", "").strip()
     raw_amount = form.get("valor", "").strip()
     category = form.get("categoria", "")
     raw_date = form.get("data", "")
+
+    if not description:
+        raise ValueError("Informe uma descrição para o gasto.")
 
     if len(description) > 255:
         raise ValueError("A descrição deve ter no máximo 255 caracteres.")
@@ -105,8 +114,12 @@ def dashboard():
         )
         expenses = cursor.fetchall()
 
-        cursor.execute("SELECT COALESCE(SUM(valor), 0) AS total FROM gastos")
-        total = cursor.fetchone()["total"]
+        cursor.execute(
+            "SELECT COALESCE(SUM(valor), 0) AS total, COUNT(*) AS expense_count FROM gastos"
+        )
+        totals = cursor.fetchone()
+        total = totals["total"]
+        expense_count = totals["expense_count"]
 
     except (mysql.connector.Error, DatabaseConfigurationError):
         app.logger.exception("Não foi possível carregar os gastos do banco de dados.")
@@ -122,6 +135,14 @@ def dashboard():
         expenses=expenses,
         category_labels=CATEGORY_LABELS,
         total=total,
+        expense_count=expense_count,
+        success_message=(
+            "Gasto atualizado com sucesso!"
+            if request.args.get("atualizado") == "1"
+            else "Gasto registrado com sucesso!"
+            if request.args.get("salvo") == "1"
+            else None
+        ),
     )
 
 
@@ -167,7 +188,7 @@ def novo_gasto():
         if connection is not None and connection.is_connected():
             connection.close()
 
-    return redirect(url_for("novo_gasto", salvo=1))
+    return redirect(url_for("dashboard", salvo=1))
 
 
 @app.route("/gastos/<int:expense_id>/editar", methods=["GET", "POST"])
@@ -250,7 +271,7 @@ def editar_gasto(expense_id):
         if connection is not None and connection.is_connected():
             connection.close()
 
-    return redirect(url_for("dashboard"))
+    return redirect(url_for("dashboard", atualizado=1))
 
 
 @app.route("/gastos/<int:expense_id>/excluir", methods=["POST"])
