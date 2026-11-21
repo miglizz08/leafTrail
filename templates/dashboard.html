@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
+  <title>Leaf Trail | Dashboard</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -14,19 +14,23 @@
 
   <div class="layout">
 
-    <aside class="sidebar">
+    <header class="mobile-header">
+      <div class="logo">
+        <div class="logo-icon" aria-hidden="true">
+          <img src="{{ url_for('static', filename='folha.svg') }}" alt="">
+        </div>
+        <strong>Leaf Trail</strong>
+      </div>
+      <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="primary-navigation">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      </button>
+    </header>
+
+    <aside class="sidebar" id="primary-navigation">
       <div class="logo">
         <!-- Ícone SVG direto no código (Sem precisar de imagem) -->
         <div class="logo-icon">
-          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <!-- Fundo preto arredondado -->
-            <rect width="100" height="100" rx="24" fill="#000000" />
-            <!-- Desenho da folha verde -->
-            <path d="M 75 25 C 40 25, 20 50, 25 75 C 50 80, 75 60, 75 25 Z" fill="none" stroke="#22c55e"
-              stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
-            <!-- Traço diagonal da folha -->
-            <path d="M 25 75 L 60 40" stroke="#22c55e" stroke-width="7" stroke-linecap="round" />
-          </svg>
+          <img src="{{ url_for('static', filename='folha.svg') }}" alt="">
         </div>
         <div>
           <strong>Leaf Trail</strong>
@@ -49,15 +53,15 @@
 
       <header class="top-header">
         <div>
-          <div class="tag"><span></span> Visão Geral</div>
-          <h1>Meus Gastos</h1>
+          <div class="tag"><span></span> Visão geral</div>
+          <h1>Dashboard</h1>
         </div>
-        <div style="display: flex; gap: 16px; align-items: center;">
+        <div class="header-actions">
           <div class="data-topo">
             <i class="fa-regular fa-calendar"></i> <time data-current-date></time>
           </div>
-          <a href="/novo-gasto" class="btn btn-save" style="text-decoration: none;">
-            <i class="fa-solid fa-plus"></i> Novo Gasto
+          <a href="/novo-gasto" class="btn btn-save">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i> Novo gasto
           </a>
         </div>
       </header>
@@ -66,13 +70,18 @@
 
         <div class="card">
 
+          {% if success_message %}
+            <p class="dashboard-toast" role="status" data-toast>{{ success_message }}</p>
+          {% endif %}
+
           <div class="table-card-header">
             <div class="table-title">
               <h2>Total gasto</h2>
               {% if db_error %}
                 <p>Indisponível</p>
               {% else %}
-                <p>{{ total | brl }}</p>
+                <p class="total-value">{{ total | brl }}</p>
+                <span class="expense-count">{{ expense_count }} {{ "lançamento" if expense_count == 1 else "lançamentos" }}</span>
               {% endif %}
             </div>
           </div>
@@ -81,9 +90,9 @@
             <table class="tabela-gastos">
               <thead>
                 <tr>
-                  <th>Descrição</th>
-                  <th>Categoria</th>
-                  <th>Data</th>
+                  <th class="column-date">Data</th>
+                  <th class="column-description">Descrição</th>
+                  <th class="column-category">Categoria</th>
                   <th>Valor</th>
                   <th style="text-align: right;">Ações</th>
                 </tr>
@@ -96,24 +105,37 @@
                 {% elif expenses %}
                 {% for expense in expenses %}
                 <tr>
-                  <td>{{ expense.descricao or "—" }}</td>
-                  <td><span class="badge-simples">{{ category_labels.get(expense.categoria, expense.categoria) }}</span>
+                  <td class="column-date"><time>{{ expense.data | expense_date }}</time></td>
+                  <td class="description-cell">
+                    <span class="expense-description">{{ expense.descricao or "Sem descrição" }}</span>
+                    <span class="mobile-expense-meta">
+                      <time>{{ expense.data | expense_date }}</time>
+                      <span class="badge-simples">{{ category_labels.get(expense.categoria, expense.categoria) }}</span>
+                    </span>
                   </td>
-                  <td>{{ expense.data.strftime("%d/%m/%Y") }}</td>
+                  <td class="column-category"><span class="badge-simples">{{ category_labels.get(expense.categoria, expense.categoria) }}</span>
+                  </td>
                   <td class="valor">{{ expense.valor | brl }}</td>
                   <td class="acoes">
                     <a class="action-btn" href="{{ url_for('editar_gasto', expense_id=expense.id) }}" aria-label="Editar gasto"><i
                         class="fa-solid fa-pen"></i></a>
-                    <form class="inline-action-form" action="{{ url_for('excluir_gasto', expense_id=expense.id) }}" method="post" onsubmit="return confirm('Deseja realmente excluir este gasto?')">
-                      <button class="action-btn btn-delete" type="submit" aria-label="Excluir gasto"><i
-                          class="fa-solid fa-trash"></i></button>
+                    <form class="inline-action-form" action="{{ url_for('excluir_gasto', expense_id=expense.id) }}" method="post" data-delete-form data-expense-name="{{ expense.descricao or 'este gasto' }}">
+                      <button class="action-btn btn-delete" type="button" aria-label="Excluir gasto" data-delete-trigger><i
+                          class="fa-solid fa-trash" aria-hidden="true"></i></button>
                     </form>
                   </td>
                 </tr>
                 {% endfor %}
                 {% else %}
                 <tr>
-                  <td colspan="5">Nenhum gasto cadastrado ainda.</td>
+                  <td colspan="5">
+                    <div class="empty-state">
+                      <span class="empty-state-icon" aria-hidden="true"><i class="fa-solid fa-receipt"></i></span>
+                      <h3>Nenhum gasto registrado ainda</h3>
+                      <p>Cadastre seu primeiro gasto para acompanhar seu total por aqui.</p>
+                      <a href="{{ url_for('novo_gasto') }}" class="btn btn-save">Cadastrar gasto</a>
+                    </div>
+                  </td>
                 </tr>
                 {% endif %}
               </tbody>
@@ -126,7 +148,21 @@
     </main>
   </div>
 
+  <dialog class="delete-dialog" aria-labelledby="delete-dialog-title" aria-describedby="delete-dialog-description">
+    <form method="dialog" class="delete-dialog-content">
+      <span class="delete-dialog-icon" aria-hidden="true"><i class="fa-solid fa-trash"></i></span>
+      <h2 id="delete-dialog-title">Excluir gasto?</h2>
+      <p id="delete-dialog-description">Tem certeza que deseja excluir <strong data-delete-expense-name></strong>? Essa ação não pode ser desfeita.</p>
+      <div class="delete-dialog-actions">
+        <button class="btn btn-cancel" value="cancel">Cancelar</button>
+        <button class="btn btn-danger" value="confirm">Excluir</button>
+      </div>
+    </form>
+  </dialog>
+
   <script src="{{ url_for('static', filename='js/current_date.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/mobile_menu.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/delete_confirmation.js') }}" defer></script>
 </body>
 
 </html>
