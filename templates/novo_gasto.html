@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Novo Gasto</title>
+  <title>Leaf Trail | {{ "Editar gasto" if is_edit else "Novo gasto" }}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -11,19 +11,24 @@
 <body>
 
   <div class="layout">
+
+    <header class="mobile-header">
+      <div class="logo">
+        <div class="logo-icon" aria-hidden="true">
+          <img src="{{ url_for('static', filename='folha.svg') }}" alt="">
+        </div>
+        <strong>Leaf Trail</strong>
+      </div>
+      <button class="menu-toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="primary-navigation">
+        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+      </button>
+    </header>
     
-    <aside class="sidebar">
+    <aside class="sidebar" id="primary-navigation">
 <div class="logo">
   <!-- Ícone SVG direto no código (Sem precisar de imagem) -->
   <div class="logo-icon">
-    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <!-- Fundo preto arredondado -->
-      <rect width="100" height="100" rx="24" fill="#000000"/>
-      <!-- Desenho da folha verde -->
-      <path d="M 75 25 C 40 25, 20 50, 25 75 C 50 80, 75 60, 75 25 Z" fill="none" stroke="#22c55e" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-      <!-- Traço diagonal da folha -->
-      <path d="M 25 75 L 60 40" stroke="#22c55e" stroke-width="7" stroke-linecap="round"/>
-    </svg>
+    <img src="{{ url_for('static', filename='folha.svg') }}" alt="">
   </div>
   <div>
     <strong>Leaf Trail</strong>
@@ -56,8 +61,8 @@
 
       <div class="content-area">
         
-        <div class="card">
-          <form id="form-gasto" action="{{ url_for('editar_gasto', expense_id=expense_id) if is_edit else url_for('novo_gasto') }}" method="POST">
+        <div class="card expense-form-card">
+          <form id="form-gasto" action="{{ url_for('editar_gasto', expense_id=expense_id) if is_edit else url_for('novo_gasto') }}" method="POST" novalidate>
             
             <div class="card-header">
               <div class="card-icon">
@@ -78,16 +83,18 @@
               <div class="form-group">
                 <label for="descricao">Descrição</label>
                 <div class="input-wrapper">
-                  <input type="text" id="descricao" name="descricao" maxlength="255" placeholder="Ex: Mercado Central, Spotify..." value="{{ form_data.get('descricao', '') if form_data else '' }}">
+                  <input type="text" id="descricao" name="descricao" maxlength="255" placeholder="Ex: Mercado Central, Spotify..." value="{{ form_data.get('descricao', '') if form_data else '' }}" aria-describedby="descricao-error">
                 </div>
+                <small class="field-error" id="descricao-error" data-error-for="descricao" aria-live="polite"></small>
               </div>
 
               <div class="form-group">
                 <label for="valor">Valor (R$)</label>
                 <div class="input-wrapper input-currency">
                   <span class="prefix">R$</span>
-                  <input type="text" id="valor" name="valor" inputmode="decimal" placeholder="0,00" required value="{{ form_data.get('valor', '') if form_data else '' }}">
+                  <input type="text" id="valor" name="valor" inputmode="decimal" placeholder="0,00" required value="{{ form_data.get('valor', '') if form_data else '' }}" aria-describedby="valor-error">
                 </div>
+                <small class="field-error" id="valor-error" data-error-for="valor" aria-live="polite"></small>
               </div>
 
               <div class="form-row">
@@ -95,7 +102,7 @@
                 <div class="form-group">
                   <label for="categoria">Categoria</label>
                   <div class="input-wrapper input-icon-right">
-                    <select id="categoria" name="categoria" required>
+                    <select id="categoria" name="categoria" required aria-describedby="categoria-error">
                       <option value="" disabled {% if not form_data or not form_data.get('categoria') %}selected{% endif %} hidden>Selecione</option>
                       <option value="alimentacao" {% if form_data and form_data.get('categoria') == 'alimentacao' %}selected{% endif %}>Alimentação</option>
                       <option value="transporte" {% if form_data and form_data.get('categoria') == 'transporte' %}selected{% endif %}>Transporte</option>
@@ -105,13 +112,15 @@
                     </select>
                     <i class="fa-solid fa-chevron-down"></i>
                   </div>
+                  <small class="field-error" id="categoria-error" data-error-for="categoria" aria-live="polite"></small>
                 </div>
 
                 <div class="form-group">
                   <label for="data">Data do Gasto</label>
                   <div class="input-wrapper input-icon-right">
-                    <input type="date" id="data" name="data" required value="{{ form_data.get('data', today) if form_data else today }}">
+                    <input type="date" id="data" name="data" required value="{{ form_data.get('data', today) if form_data else today }}" aria-describedby="data-error">
                   </div>
+                  <small class="field-error" id="data-error" data-error-for="data" aria-live="polite"></small>
                 </div>
 
               </div>
@@ -132,5 +141,7 @@
   </div>
 
   <script src="{{ url_for('static', filename='js/current_date.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/mobile_menu.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='js/expense_form.js') }}" defer></script>
 </body>
 </html>
