@@ -33,6 +33,12 @@ def format_brl(value):
     return f"R$ {whole_with_separators},{cents}"
 
 
+@app.template_filter("expense_date")
+def format_expense_date(value):
+    month_names = ("Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez")
+    return f"{value.day:02d} {month_names[value.month - 1]} {value.year}"
+
+
 def validate_expense(form):
     description = form.get("descricao", "").strip()
     raw_amount = form.get("valor", "").strip()
